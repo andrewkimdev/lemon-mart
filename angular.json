@@ -36,11 +36,11 @@
               "src/favicon-32x32.png",
               "src/mstile-310x310.png",
               "src/apple-touch-icon.png",
-              "src/manifest.json",
+              "src/site.webmanifest",
               "src/mstile-70x70.png",
               "src/browserconfig.xml",
               "src/mstile-144x144.png",
-              "safari-pinned-tab.svg",
+              "src/safari-pinned-tab.svg",
               "src/mstile-150x150.png"
             ],
             "styles": [
