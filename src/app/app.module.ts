@@ -16,6 +16,8 @@ import { LoginComponent } from './login/login.component';
 // import { InventoryModule } from './inventory/inventory.module';
 import { MaterialModule } from './material.module';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { NavigationMenuComponent } from './navigation-menu/navigation-menu.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     PageNotFoundComponent,
     LoginComponent,
     SimpleDialogComponent,
+    NavigationComponent,
+    NavigationMenuComponent,
   ],
   imports: [
     BrowserModule,
