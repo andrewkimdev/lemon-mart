@@ -21,7 +21,7 @@ export class CacheService {
   }
 
   protected removeItem(key: string): void {
-    localStorage.removeI(key);
+    localStorage.removeItem(key);
   }
 
   protected clear(): void {

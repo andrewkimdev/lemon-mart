@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as decode from 'jwt-decode';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, pipe, throwError } from 'rxjs';
 import { catchError, filter, map, mergeMap, tap } from 'rxjs/operators';
 
 import { transformError } from '../common/common';
@@ -32,6 +32,15 @@ export interface IAuthService {
 export abstract class AuthService extends CacheService implements IAuthService {
   constructor() {
     super();
+    if (this.hasExpiredToken()) {
+      this.logout(true);
+    } else {
+      this.authStatus$.next(this.getAuthStatusFromToken());
+      // To load user on browser refresh,
+      // resume pipeline must activate on the next cycle
+      // Which allows for all services to be constructed properly
+      setTimeout(() => this.resumeCurrentUser$.subscribe(), 0);
+    }
   }
 
   defaultAuthStatus: IAuthStatus = {
@@ -42,6 +51,17 @@ export abstract class AuthService extends CacheService implements IAuthService {
 
   readonly authStatus$ = new BehaviorSubject<IAuthStatus>(this.defaultAuthStatus);
   readonly currentUser$ = new BehaviorSubject<IUser>(new User());
+
+  private getAndUpdateUserIfAuthenticated = pipe(
+    filter((status: IAuthStatus) => status.isAuthenticated),
+    mergeMap(() => this.getCurrentUser()),
+    map((user: IUser) => this.currentUser$.next(user)),
+    catchError(transformError)
+  );
+
+  protected readonly resumeCurrentUser$ = this.authStatus$.pipe(
+    this.getAndUpdateUserIfAuthenticated
+  );
   protected abstract authProvider(
     email: string,
     password: string
@@ -69,10 +89,7 @@ export abstract class AuthService extends CacheService implements IAuthService {
         return this.transformJwtToken(token);
       }),
       tap((status: IAuthStatus) => this.authStatus$.next(status)),
-      filter((status: IAuthStatus) => status.isAuthenticated),
-      mergeMap(() => this.getCurrentUser()),
-      map((user) => this.currentUser$.next(user)),
-      catchError(transformError)
+      this.getAndUpdateUserIfAuthenticated
     );
 
     loginResponse$.subscribe({
@@ -91,5 +108,18 @@ export abstract class AuthService extends CacheService implements IAuthService {
     setTimeout(() => {
       this.authStatus$.next(this.defaultAuthStatus);
     }, 0);
+  }
+
+  protected hasExpiredToken(): boolean {
+    const jwt = this.getToken();
+    if (jwt) {
+      const payload = decode.default(jwt) as any;
+      return Date.now() >= payload.exp * 1000;
+    }
+    return true;
+  }
+
+  protected getAuthStatusFromToken(): IAuthStatus {
+    return this.transformJwtToken(decode.default(this.getToken()));
   }
 }
