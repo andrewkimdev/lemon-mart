@@ -36,5 +36,6 @@
           <div *ngIf="loginError" class="mat-caption error">{{loginError}}</div>
         </div>
       </form>
+      <button mat-raised-button color="primary" (click)="login(loginForm)">Login</button>
     </mat-card-content>
   </mat-card>

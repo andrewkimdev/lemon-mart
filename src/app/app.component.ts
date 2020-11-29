@@ -33,7 +33,7 @@ import { AuthService } from './auth/auth.service';
           *ngIf="auth?.user?.picture"
           class="image-cropper"
           [src]="auth?.user?.picture"
-        />>
+        />
         <mat-icon *ngIf="!auth?.user?.picture">account_circle</mat-icon>
       </button>
       <button

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { catchError, filter, tap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 
 import { AuthService } from '../auth/auth.service';
+import { UiService } from '../common/ui.service';
+import { EmailValidation, PasswordValidation } from '../common/validations';
 
 @Component({
   selector: 'app-login',
@@ -23,17 +25,15 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private uiService: UiService
   ) {
     this.subs.sink = route.paramMap.subscribe(
       (params) => (this.redirectUrl = params.get('redirectedUrl') ?? '')
     );
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [Validators.required, Validators.minLength(8), Validators.maxLength(50)],
-      ],
+      email: ['', EmailValidation],
+      password: ['', PasswordValidation],
     });
   }
 
@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     this.authService.logout();
   }
 
-  async login(submittedForm: FormGroup) {
+  async login(submittedForm: FormGroup): Promise<void> {
     this.authService
       .login(submittedForm.value.email, submittedForm.value.password)
       .pipe(catchError((err) => (this.loginError = err)));
@@ -53,6 +53,9 @@ export class LoginComponent implements OnInit {
         filter(([authStatus, user]) => authStatus.isAuthenticated && user?._id !== ''),
         tap(([authStatus, user]) => {
           this.router.navigate([this.redirectUrl || '/manager']);
+        }),
+        tap(([authStatus, user]) => {
+          this.uiService.showToast(`Welcome ${user.fullName}! Role: ${user.role}`);
         })
       )
       .subscribe();
