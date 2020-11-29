@@ -8,14 +8,16 @@ import { AuthService } from '../auth/auth.service';
 @Component({
   selector: 'app-home',
   template: `
-    <div fxLayout="column" fxLayoutAlign="center center">
-      <span class="mat-display-2">Hello, Limoncu!</span>
-      <button mat-raised-button color="primary">Login</button>
-      <br />
-      <button mat-raised-button color="primary" (click)="login()">
-        Login as Manager
-      </button>
+    <div *ngIf="(authService.authStatus$ | async)?.isAuthenticated; else doLogin">
+      <div class="mat-display-4">This is LemonMart! There place where</div>
+      <div class="mat-display-4">
+        You get a lemon, you get a lemon, you get a lemon...
+      </div>
+      <div class="mat-display-4">Everybody gets a lemon.</div>
     </div>
+    <ng-template #doLogin>
+      <app-login></app-login>
+    </ng-template>
   `,
   styles: [
     `
@@ -26,11 +28,11 @@ import { AuthService } from '../auth/auth.service';
   ],
 })
 export class HomeComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(public authService: AuthService, private router: Router) { }
 
   ngOnInit(): void { }
 
-  login() {
+  login(): void {
     this.authService.login('manager@test.com', '12345678');
     combineLatest([this.authService.authStatus$, this.authService.currentUser$])
       .pipe(
