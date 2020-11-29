@@ -6,6 +6,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { InMemoryAuthService } from './auth/auth.inmemory.service';
+import { AuthService } from './auth/auth.service';
 import { HomeComponent } from './home/home.component';
 // import { InventoryModule } from './inventory/inventory.module';
 import { MaterialModule } from './material.module';
@@ -27,7 +29,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     // PosModule,
     // UserModule,
   ],
-  providers: [],
+  providers: [{ provide: AuthService, useClass: InMemoryAuthService }],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

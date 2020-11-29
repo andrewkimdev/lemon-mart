@@ -16,6 +16,7 @@ export interface IUser {
     zip: string;
   };
   phones: IPhone[];
+  readonly fullName?: string;
 }
 
 export interface IName {
@@ -78,5 +79,22 @@ export class User implements IUser {
       user.address,
       user.phones
     );
+  }
+
+  public get fullName(): string {
+    if (!this.name) {
+      return '';
+    }
+    if (this.name.middle) {
+      return `${this.name.first} ${this.name.middle} ${this.name.last}`;
+    }
+    return `${this.name.first} ${this.name.last}`;
+  }
+
+  toJson(): object {
+    const serialized = Object.assign(this);
+    delete serialized._id;
+    delete serialized.fullName;
+    return serialized;
   }
 }

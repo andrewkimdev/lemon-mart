@@ -11,4 +11,4 @@ const modules = [MatButtonModule, MatToolbarModule, MatIconModule];
   exports: modules,
   // CommonModule
 })
-export class MaterialModule { }
+export class MaterialModule {}

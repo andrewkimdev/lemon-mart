@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { Routes } from '@angular/router';
 
 import { MaterialModule } from '../material.module';
 import { ManagerHomeComponent } from './manager-home/manager-home.component';
@@ -18,4 +17,4 @@ import { UserManagementComponent } from './user-management/user-management.compo
   ],
   imports: [CommonModule, MaterialModule, ManagerRoutingModule],
 })
-export class ManagerModule { }
+export class ManagerModule {}

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { Routes } from '@angular/router';
 
 import { MaterialModule } from '../material.module';
 import { CategoriesComponent } from './categories/categories.component';
@@ -20,4 +19,4 @@ import { StockEntryComponent } from './stock-entry/stock-entry.component';
   ],
   imports: [CommonModule, MaterialModule, InventoryRoutingModule],
 })
-export class InventoryModule { }
+export class InventoryModule {}

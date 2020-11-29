@@ -8,9 +8,8 @@ describe('ReceiptLookupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReceiptLookupComponent ]
-    })
-    .compileComponents();
+      declarations: [ReceiptLookupComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
