@@ -26,6 +26,11 @@ export interface IAuthService {
   getToken(): string;
 }
 
+export const defaultAuthStatus: IAuthStatus = {
+  isAuthenticated: false,
+  userId: '',
+  userRole: Role.None,
+};
 @Injectable({
   providedIn: 'root',
 })
@@ -43,13 +48,7 @@ export abstract class AuthService extends CacheService implements IAuthService {
     }
   }
 
-  defaultAuthStatus: IAuthStatus = {
-    isAuthenticated: false,
-    userId: '',
-    userRole: Role.None,
-  };
-
-  readonly authStatus$ = new BehaviorSubject<IAuthStatus>(this.defaultAuthStatus);
+  readonly authStatus$ = new BehaviorSubject<IAuthStatus>(defaultAuthStatus);
   readonly currentUser$ = new BehaviorSubject<IUser>(new User());
 
   private getAndUpdateUserIfAuthenticated = pipe(
@@ -106,7 +105,7 @@ export abstract class AuthService extends CacheService implements IAuthService {
       this.clearToken();
     }
     setTimeout(() => {
-      this.authStatus$.next(this.defaultAuthStatus);
+      this.authStatus$.next(defaultAuthStatus);
     }, 0);
   }
 
